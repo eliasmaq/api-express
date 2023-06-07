@@ -10,8 +10,15 @@ let products = [
   },
 ];
 
-app.use(morgan("dev"));
 app.use(express.json());
+app.use(morgan("dev"));
+
+app.set('appName', 'Express course')
+app.set('port', 3000)
+
+app.get("/UserName", (req, res) => {
+  res.send("Username Route");
+});
 
 app.get("/products", (req, res) => {
   res.json(products);
@@ -33,9 +40,11 @@ app.put("/products/:id", (req, res) => {
         message: "product not found",
       });
     
-    const newProducts = products.map(p => p.id === parseInt(req.params.id) ? {...p, ...newData} : p)
-    console.log(newProducts)
-    res.send("actualizando productos");
+    products = products.map(p => p.id === parseInt(req.params.id) ? {...p, ...newData} : p)
+    
+    res.json({
+      message: "product updated succesfully"
+    });
 });
 
 app.delete("/products/:id", (req, res) => {
@@ -62,5 +71,5 @@ app.get("/products/:id", (req, res) => {
   console.log(productFound);
 });
 
-app.listen(3000);
-console.log("server on port 3000");
+app.listen(app.get('port'));
+console.log(`Server ${app.get('appName')} on port ${app.get('port')}`);
